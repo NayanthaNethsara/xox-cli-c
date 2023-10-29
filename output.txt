@@ -1,0 +1,37 @@
+Board Size is: 3
+  |   |  
+  |   |  
+  |   |  
+
+Board Size is: 3
+  |   |  
+  |   |  
+  |   |  
+
+X |   |  
+  |   |  
+  |   |  
+
+X |   | O
+  |   |  
+  |   |  
+
+X |   | O
+  | X |  
+  |   |  
+
+X | O | O
+  | X |  
+  |   |  
+
+X | O | O
+  | X |  
+  |   | X
+
+Congratulations! X Win the game.
+
+Board Size is: 3
+  |   |  
+  |   |  
+  |   |  
+

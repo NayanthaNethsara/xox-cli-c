@@ -5,11 +5,12 @@ void createBoard(char ***arr, int n);
 void printBoard(char **arr, int n);
 void clearBoard(char ***arr, int n);
 void freeBoard(char ***arr, int n);
-void writeMoves(char **arr, int n, FILE *logfile);
+void writeMoves(char **arr, int n, const char *filename);
+void writeFile(char *msg, const char *filename);
 
 void move(char ***arr, int n, int *moves, char player);
-int checkWin(char **arr, int n, char player);
-int checkDraw(int moves, int n);
+int checkWin(char **arr, int n, char player, const char *filename);
+int checkDraw(int moves, int n, const char *filename);
 
 int main()
 {
@@ -18,63 +19,72 @@ int main()
     char **board;
 
     const char *filename = "output.txt";
-    FILE *logfile = fopen(filename, "a");
 
-    if (logfile == NULL)
+    while (1)
     {
-        printf("Error opening the file.\n");
-        return 1;
+        printf("Enter Board Size: ");
+        scanf("%d", &n);
+
+        if (n >= 3)
+        {
+            break;
+        }
+        else
+        {
+            printf("Enter Valid Board Size: (>=3) ");
+            scanf("%d", &n);
+        }
     }
 
-    printf("Enter Board Size: ");
-    scanf("%d", &n);
+    char msg[50];
+    sprintf(msg, "Board Size is: %d", n);
+    writeFile(msg, filename);
 
     createBoard(&board, n);
     clearBoard(&board, n);
     printBoard(board, n);
-    writeMoves(board, n, logfile);
+    writeMoves(board, n, filename);
 
     while (1)
     {
         move(&board, n, &moves, 'X');
         printBoard(board, n);
-        writeMoves(board, n, logfile);
-        printf("Move count: %d\n", moves);
+        writeMoves(board, n, filename);
 
-        if (checkWin(board, n, 'X'))
+        if (checkWin(board, n, 'X', filename))
             break;
-        else if (checkDraw(moves, n))
+        else if (checkDraw(moves, n, filename))
             break;
 
         move(&board, n, &moves, 'O');
         printBoard(board, n);
-        writeMoves(board, n, logfile);
-        printf("Move count: %d\n", moves);
+        writeMoves(board, n, filename);
 
-        if (checkWin(board, n, 'O'))
+        if (checkWin(board, n, 'O', filename))
             break;
-        else if (checkDraw(moves, n))
+        else if (checkDraw(moves, n, filename))
             break;
     }
 
     freeBoard(&board, n);
-    fclose(logfile);
 
     return 0;
 }
 
-int checkDraw(int moves, int n)
+int checkDraw(int moves, int n, const char *filename)
 {
     if (moves >= n * n)
     {
-        printf("Draw! No Possible Moves. \n");
+        char *msg = "Draw! No Possible Moves. \n";
+        printf("%s", msg);
+        writeFile(msg, filename);
         return 1;
     }
     else
         return 0;
 }
 
-int checkWin(char **arr, int n, char player)
+int checkWin(char **arr, int n, char player, const char *filename)
 {
     int checkMainDiagonal()
     {
@@ -124,22 +134,27 @@ int checkWin(char **arr, int n, char player)
         return 1;
     }
 
-    int win(char player)
+    int win(char player, const char *filename)
     {
-        printf("Congratulations! %c Win the game.\n", player);
+
+        char msg[50];
+        sprintf(msg, "Congratulations! %c Win the game.\n", player);
+
+        printf("%s", msg);
+        writeFile(msg, filename);
         return 1;
     }
 
     // Check main diagonal
     if (checkMainDiagonal())
     {
-        win(player);
+        return win(player, filename);
     }
 
     // Check anti-diagonal
     if (checkAntiDiagonal())
     {
-        win(player);
+        return win(player, filename);
     }
 
     // Check columns
@@ -147,7 +162,7 @@ int checkWin(char **arr, int n, char player)
     {
         if (checkColumn(col))
         {
-            win(player);
+            return win(player, filename);
         }
     }
 
@@ -157,7 +172,7 @@ int checkWin(char **arr, int n, char player)
         if (checkRow(row))
         {
 
-            win(player);
+            return win(player, filename);
         }
     }
 
@@ -230,8 +245,15 @@ void freeBoard(char ***arr, int n)
     free(*arr);
 }
 
-void writeMoves(char **arr, int n, FILE *logfile)
+void writeMoves(char **arr, int n, const char *filename)
 {
+    FILE *logfile = fopen(filename, "a");
+
+    if (logfile == NULL)
+    {
+        printf("Error opening the file.\n");
+    }
+
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < n; j++)
@@ -245,4 +267,20 @@ void writeMoves(char **arr, int n, FILE *logfile)
         fprintf(logfile, "\n");
     }
     fprintf(logfile, "\n");
+
+    fclose(logfile);
+}
+
+void writeFile(char *msg, const char *filename)
+{
+    FILE *logfile = fopen(filename, "a");
+
+    if (logfile == NULL)
+    {
+        printf("Error opening the file.\n");
+    }
+
+    fprintf(logfile, "%s\n", msg);
+
+    fclose(logfile);
 }
