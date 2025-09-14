@@ -11,7 +11,7 @@ SRC = xox.c board.c filewrite.c gameplay.c
 INC = -I header
 
 # Output executable
-TARGET = xox
+TARGET = xox.o
 
 # Default target
 all: $(TARGET)

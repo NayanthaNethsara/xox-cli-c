@@ -97,104 +97,90 @@ int checkDraw(int moves, int n, const char *filename)
 // Function to check for a Win
 int checkWin(char **board, int n, char player, const char *filename)
 {
-    // Function to check the main diagonal
-    int checkMainDiagonal()
+    int win = 1;
+
+    // Check rows and columns
+    for (int i = 0; i < n; i++)
     {
-        for (int i = 0; i < n; i++)
+        // Check row i
+        win = 1;
+        for (int j = 0; j < n; j++)
         {
-            if (board[i][i] != player)
+            if (board[i][j] != player)
             {
-                return 0;
+                win = 0;
+                break;
             }
         }
-        return 1;
-    }
-
-    // Function to check the anti diagonal
-    int checkAntiDiagonal()
-    {
-        for (int i = 0; i < n; i++)
+        if (win)
         {
-            if (board[i][n - 1 - i] != player)
+            char msg[50];
+            sprintf(msg, "Congratulations! %c wins the game.\n", player);
+            printf("%s", msg);
+            writeFile(msg, filename);
+            return 1;
+        }
+
+        // Check column i
+        win = 1;
+        for (int j = 0; j < n; j++)
+        {
+            if (board[j][i] != player)
             {
-                return 0;
+                win = 0;
+                break;
             }
         }
-        return 1;
-    }
-
-    // Function to check a column
-    int checkColumn(int col)
-    {
-        for (int i = 0; i < n; i++)
+        if (win)
         {
-            if (board[i][col] != player)
-            {
-                return 0;
-            }
+            char msg[50];
+            sprintf(msg, "Congratulations! %c wins the game.\n", player);
+            printf("%s", msg);
+            writeFile(msg, filename);
+            return 1;
         }
-        return 1;
     }
 
-    // Function to check a row
-    int checkRow(int row)
+    // Check main diagonal
+    win = 1;
+    for (int i = 0; i < n; i++)
     {
-        for (int i = 0; i < n; i++)
+        if (board[i][i] != player)
         {
-            if (board[row][i] != player)
-            {
-                return 0;
-            }
+            win = 0;
+            break;
         }
-        return 1;
     }
-
-    // Function to print win msg
-    int win(char player, const char *filename)
+    if (win)
     {
-
         char msg[50];
-        sprintf(msg, "Congratulations! %c Win the game.\n", player);
-
+        sprintf(msg, "Congratulations! %c wins the game.\n", player);
         printf("%s", msg);
         writeFile(msg, filename);
         return 1;
     }
 
-    // Check main diagonal
-    if (checkMainDiagonal())
-    {
-        return win(player, filename);
-    }
-
     // Check anti-diagonal
-    if (checkAntiDiagonal())
+    win = 1;
+    for (int i = 0; i < n; i++)
     {
-        return win(player, filename);
-    }
-
-    // Check columns
-    for (int col = 0; col < n; col++)
-    {
-        if (checkColumn(col))
+        if (board[i][n - 1 - i] != player)
         {
-            return win(player, filename);
+            win = 0;
+            break;
         }
     }
-
-    // Check rows
-    for (int row = 0; row < n; row++)
+    if (win)
     {
-        if (checkRow(row))
-        {
-
-            return win(player, filename);
-        }
+        char msg[50];
+        sprintf(msg, "Congratulations! %c wins the game.\n", player);
+        printf("%s", msg);
+        writeFile(msg, filename);
+        return 1;
     }
 
-    return 0;
+    return 0; // No win
 }
-
 // Function to create the game board using dynamic allocation
 void createBoard(char ***board, int n)
 {
