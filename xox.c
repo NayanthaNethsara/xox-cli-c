@@ -12,7 +12,14 @@ int main()
     const char *filename = "output.txt";
 
     // Get a valid board size (n should be >= 3)
-    getBoardSize(&n);
+    do {
+        printf("Enter Board Size: ");
+        scanf("%d", &n);
+
+        if (n < 3) {
+            printf("Invalid board size, board size should be (>=3)\n");
+        }
+    } while (n < 3);
 
     // Write the board size to the output file
     char msg[50];
